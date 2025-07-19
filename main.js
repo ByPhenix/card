@@ -1,38 +1,29 @@
-function getClientIdFromURL() {
-  const params = new URLSearchParams(window.location.search);
-  return params.get('id');
+import { db } from './firebase.js';
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const urlParams = new URLSearchParams(window.location.search);
+const id = urlParams.get('id');
+
+const nombreEl = document.getElementById('nombreCliente');
+const puntosEl = document.getElementById('puntosCliente');
+
+async function cargarCliente() {
+  if (!id) {
+    nombreEl.textContent = "ID no proporcionado";
+    return;
+  }
+
+  const docRef = doc(db, "Clientes", id);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+    nombreEl.textContent = data.nombre;
+    puntosEl.textContent = data.puntos ?? 0;
+  } else {
+    nombreEl.textContent = "Cliente no encontrado";
+    puntosEl.textContent = "-";
+  }
 }
 
-function afficherCarte() {
-  const id = getClientIdFromURL();
-  if (!id) return;
-
-  db.collection("clients").doc(id).get().then((doc) => {
-    if (doc.exists) {
-      document.getElementById("carte").innerText =
-        "Nom : " + doc.data().nom + " | Points : " + doc.data().points;
-    } else {
-      document.getElementById("carte").innerText = "Client non trouvé.";
-    }
-  });
-}
-
-function ajouterTampon() {
-  const id = document.getElementById("clientId").value;
-  const ref = db.collection("clients").doc(id);
-
-  ref.get().then((doc) => {
-    if (doc.exists) {
-      const points = doc.data().points + 1;
-      ref.update({ points: points }).then(() => {
-        alert("Tampon ajouté !");
-      });
-    } else {
-      alert("Client non trouvé !");
-    }
-  });
-}
-
-if (window.location.pathname.includes("carte.html")) {
-  window.onload = afficherCarte;
-}
+cargarCliente();
