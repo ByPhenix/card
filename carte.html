@@ -2,83 +2,90 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tarjeta de Fidelidad</title>
   <style>
     body {
       margin: 0;
       padding: 0;
-      font-family: sans-serif;
-      background: #fff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom right, #fff8f0, #ffe1db);
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      height: 100vh;
+      justify-content: flex-start;
+      min-height: 100vh;
     }
 
     .title {
-      font-size: 24px;
+      font-size: 28px;
       font-weight: bold;
-      margin-bottom: 20px;
-      color: #000;
+      margin: 30px 0 20px;
+      color: #5c2a1d;
     }
 
     .card {
-      background-color: #ffd5ca;
-      padding: 35px 30px 40px;
-      border-radius: 20px;
-      text-align: center;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      max-width: 370px;
+      background: #fff1ec;
+      border-radius: 30px;
+      padding: 40px 30px;
+      max-width: 380px;
       width: 90%;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      text-align: center;
+      position: relative;
     }
 
     .logo {
-      width: 90px;
+      width: 80px;
       margin-bottom: 10px;
     }
 
     .brand-name {
-      font-size: 18px;
+      font-size: 20px;
       font-weight: bold;
-      margin-bottom: 5px;
+      color: #5c2a1d;
     }
 
     .client-name {
-      font-size: 20px;
-      font-weight: bold;
-      margin-bottom: 10px;
+      font-size: 22px;
+      font-weight: 600;
+      margin: 5px 0 10px;
+      color: #2e2e2e;
     }
 
     .points {
       font-weight: bold;
-      margin-bottom: 15px;
+      color: #8a4f3d;
+      margin-bottom: 25px;
     }
 
     .circles {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 10px;
-      justify-items: center;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
     }
 
     .circle {
-      width: 40px;
-      height: 40px;
+      width: 42px;
+      height: 42px;
+      background: white;
       border-radius: 50%;
-      background-color: white;
-      color: black;
+      border: 2px solid #8a4f3d;
+      color: #8a4f3d;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: bold;
-      border: 2px solid black;
+      font-size: 14px;
+      transition: 0.3s;
     }
 
     .circle.active {
-      background-color: #333;
+      background: #8a4f3d;
       color: white;
+      transform: scale(1.1);
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
     }
   </style>
 </head>
@@ -104,7 +111,6 @@
 
       const ref = doc(db, "Clientes", id);
       const snap = await getDoc(ref);
-
       if (!snap.exists()) return;
 
       const data = snap.data();
@@ -115,7 +121,6 @@
       document.getElementById('clientName').textContent = name;
 
       const container = document.getElementById('circleContainer');
-      container.innerHTML = ""; // reset
       for (let i = 1; i <= 10; i++) {
         const el = document.createElement('div');
         el.className = 'circle' + (i <= points ? ' active' : '');
