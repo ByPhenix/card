@@ -9,13 +9,12 @@
       background-color: #fef6f4;
       font-family: 'Arial', sans-serif;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
       min-height: 100vh;
       margin: 0;
-      overflow-x: hidden;
-      position: relative;
       padding: 20px;
+      position: relative;
     }
 
     .background-leaf {
@@ -30,6 +29,14 @@
     .leaf3 { bottom: 40px; left: 10px; transform: rotate(5deg); }
     .leaf4 { bottom: 30px; right: 30px; transform: rotate(-20deg); }
 
+    h1 {
+      font-size: 2em;
+      margin-bottom: 25px;
+      color: #6e2f23;
+      position: relative;
+      z-index: 1;
+    }
+
     .card-container {
       position: relative;
       z-index: 1;
@@ -42,14 +49,8 @@
       width: 100%;
     }
 
-    h1 {
-      font-size: 1.8em;
-      margin-bottom: 25px;
-      color: #6e2f23;
-    }
-
     .logo {
-      width: 60px;
+      width: 80px;
       margin-bottom: 15px;
     }
 
@@ -109,15 +110,17 @@
 </head>
 <body>
 
-  <!-- Background decorative leaves -->
+  <!-- Feuilles en fond -->
   <img src="f1.png" alt="Feuille 1" class="background-leaf leaf1">
   <img src="f2.png" alt="Feuille 2" class="background-leaf leaf2">
   <img src="f3.png" alt="Feuille 3" class="background-leaf leaf3">
   <img src="f4.png" alt="Feuille 4" class="background-leaf leaf4">
 
-  <!-- Card content -->
+  <!-- Titre -->
+  <h1>Tarjeta de Fidelidad</h1>
+
+  <!-- Carte -->
   <div class="card-container">
-    <h1>Tarjeta de Fidelidad</h1>
     <img src="logo.png" alt="Logo" class="logo">
     <div class="brand">Sentir Café</div>
     <div class="client" id="clientName">Cliente</div>
@@ -125,8 +128,8 @@
     <div class="stamps" id="stampsContainer"></div>
   </div>
 
+  <!-- Script pour générer les tampons -->
   <script>
-    // Récupérer l'ID depuis l'URL
     const urlParams = new URLSearchParams(window.location.search);
     const clientId = urlParams.get('id');
 
