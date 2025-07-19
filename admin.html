@@ -1,22 +1,61 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin | Fidélité</title>
   <script type="module" src="admin.js"></script>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f9f9f9;
+      padding: 2rem;
+    }
+    h1 {
+      text-align: center;
+      color: #63003c;
+    }
+    input {
+      margin: 0 5px;
+      padding: 5px;
+    }
+    button {
+      padding: 6px 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: left;
+    }
+    th {
+      background-color: #ffd5ca;
+      color: black;
+    }
+    tr:nth-child(even) {
+      background-color: #fff4f1;
+    }
+    .actions button {
+      background-color: #ffd5ca;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-  <h1>Liste des clients</h1>
-  
-  <form id="ajoutClientForm">
-    <input type="text" id="nomClient" placeholder="Nom" required />
-    <input type="number" id="pointsClient" placeholder="Points" required />
-    <button type="submit">Ajouter</button>
-  </form>
-
-  <table border="1">
+  <h1>Liste des clientes</h1>
+  <div style="text-align: center;">
+    <input type="text" id="nom" placeholder="Nom">
+    <input type="number" id="points" placeholder="Points">
+    <button onclick="ajouterClient()">Ajouter</button>
+  </div>
+  <table>
     <thead>
       <tr>
         <th>Nom</th>
