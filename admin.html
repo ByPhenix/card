@@ -1,15 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin | Fidélité</title>
+  <script type="module" src="admin.js"></script>
   <link rel="stylesheet" href="style.css" />
-  <script src="firebase.js"></script>
-  <script src="main.js" defer></script>
 </head>
 <body>
-  <h2>Interface Admin</h2>
-  <input type="text" id="clientId" placeholder="ID du client" />
-  <button onclick="ajouterTampon()">Ajouter un tampon</button>
+  <h1>Liste des clients</h1>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Points</th>
+      </tr>
+    </thead>
+    <tbody id="clientTableBody"></tbody>
+  </table>
 </body>
 </html>
