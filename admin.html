@@ -5,26 +5,70 @@
   <title>Administración de Clientes</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    :root {
-      --rosa: #ffd5ca;
-      --rosa-fuerte: #d06b5a;
-      --gris-fondo: #f2f2f2;
-    }
-
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: var(--gris-fondo);
-      margin: 0;
+      font-family: sans-serif;
+      background-color: #f2f2f2;
       padding: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      text-align: center;
     }
 
     h1 {
-      color: var(--rosa-fuerte);
-      margin-bottom: 30px;
-      font-size: 28px;
+      color: #d06b5a;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    table {
+      margin: 20px auto;
+      border-collapse: collapse;
+      width: 90%;
+      max-width: 800px;
+      background-color: white;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 14px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+
+    th {
+      background-color: #ffd5ca;
+      color: #000;
+    }
+
+    input[type="text"], input[type="number"], input[type="password"] {
+      padding: 10px;
+      margin: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      width: 90%;
+      max-width: 300px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #d06b5a;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #b65d4e;
+    }
+
+    .action-btn {
+      margin: 4px 0;
+      width: 100%;
+      border-radius: 6px;
     }
 
     #login {
@@ -37,95 +81,38 @@
 
     #adminPanel {
       display: none;
-      width: 100%;
-      max-width: 800px;
     }
 
-    input[type="text"], input[type="number"], input[type="password"] {
-      padding: 10px;
-      margin: 10px 5px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-      width: calc(100% - 22px);
-      max-width: 300px;
-    }
-
-    button {
-      padding: 10px 16px;
-      background-color: var(--rosa-fuerte);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 16px;
-      margin-top: 10px;
-    }
-
-    button:hover {
-      background-color: #b65d4e;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
-      border-radius: 12px;
-      overflow: hidden;
-      margin-top: 30px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
-    }
-
-    th {
-      background-color: var(--rosa);
-      color: #000;
-      padding: 12px;
-      text-align: center;
-    }
-
-    td {
-      background: white;
-      padding: 12px;
-      text-align: center;
-      border-bottom: 1px solid #ddd;
-    }
-
-    .action-btn {
-      display: block;
-      margin: 5px auto;
-      width: 100px;
+    img.logo {
+      width: 120px;
+      margin-bottom: 10px;
     }
 
     @media screen and (max-width: 600px) {
       table {
         font-size: 14px;
       }
-
-      input {
-        width: 90%;
+      input[type="text"], input[type="number"], input[type="password"] {
+        width: 100%;
       }
-
-      .action-btn {
-        width: 90%;
-      }
-
-      th, td {
-        padding: 10px;
-      }
-
       button {
-        font-size: 14px;
+        width: 100%;
+        max-width: 200px;
       }
     }
   </style>
 </head>
 <body>
+  <!-- Login -->
   <div id="login">
+    <img src="logo.png" alt="Logo Sentir Café" class="logo" />
+    <h1>Sentir Café</h1>
     <h2>Introduce el código de acceso</h2>
     <input type="password" id="passwordInput" placeholder="Código" />
     <button onclick="verificarCodigo()">Entrar</button>
   </div>
 
+  <!-- Panel Admin -->
   <div id="adminPanel">
     <h1>Clientes</h1>
     <input type="text" id="nombreInput" placeholder="Nombre" />
@@ -164,7 +151,9 @@
         const celdaNombre = document.createElement("td");
         celdaNombre.textContent = data.nombre;
         celdaNombre.contentEditable = true;
-        celdaNombre.addEventListener("blur", () => actualizarCampo(docSnap.id, "nombre", celdaNombre.textContent));
+        celdaNombre.addEventListener("blur", () =>
+          actualizarCampo(docSnap.id, "nombre", celdaNombre.textContent)
+        );
         fila.appendChild(celdaNombre);
 
         // Points (editable)
@@ -176,17 +165,13 @@
           if (!isNaN(valor)) {
             actualizarCampo(docSnap.id, "puntos", valor);
           } else {
-            celdaPuntos.textContent = data.puntos; // reset if invalid
+            celdaPuntos.textContent = data.puntos;
           }
         });
         fila.appendChild(celdaPuntos);
 
         // Actions
         const celdaAcciones = document.createElement("td");
-        const btnEliminar = document.createElement("button");
-        btnEliminar.textContent = "Eliminar";
-        btnEliminar.className = "action-btn";
-        btnEliminar.onclick = () => eliminarCliente(docSnap.id);
 
         const btnVer = document.createElement("button");
         btnVer.textContent = "Ver tarjeta";
@@ -195,6 +180,11 @@
           const url = `carte.html?id=${docSnap.id}`;
           window.open(url, "_blank");
         };
+
+        const btnEliminar = document.createElement("button");
+        btnEliminar.textContent = "Eliminar";
+        btnEliminar.className = "action-btn";
+        btnEliminar.onclick = () => eliminarCliente(docSnap.id);
 
         celdaAcciones.appendChild(btnVer);
         celdaAcciones.appendChild(btnEliminar);
@@ -207,7 +197,6 @@
     async function agregarCliente() {
       const nombre = document.getElementById("nombreInput").value.trim();
       const puntos = parseInt(document.getElementById("puntosInput").value) || 0;
-
       if (!nombre) return alert("Nombre obligatorio");
 
       await addDoc(collection(db, "Clientes"), { nombre, puntos });
@@ -226,6 +215,7 @@
       await updateDoc(doc(db, "Clientes", id), { [campo]: valor });
     }
 
+    // Vérification du code
     window.verificarCodigo = function () {
       const code = document.getElementById("passwordInput").value;
       if (code === "1234") {
