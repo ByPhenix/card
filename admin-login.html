@@ -1,85 +1,255 @@
-<!-- admin-login.html -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
+  <title>Administración de Clientes</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Acceso Admin</title>
   <style>
+    :root {
+      --main-color: #d06b5a;
+      --light-pink: #ffd5ca;
+      --hover-color: #b65d4e;
+    }
+
     body {
-      background-color: #f2f2f2;
-      font-family: sans-serif;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+
+    #login, #adminPanel {
+      padding: 20px;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    #login {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       height: 100vh;
-      margin: 0;
-    }
-
-    .logo {
-      width: 100px;
-      margin-bottom: 10px;
-    }
-
-    .brand {
-      font-size: 24px;
-      font-weight: bold;
-      color: #333;
-      margin-bottom: 20px;
-    }
-
-    .login-box {
-      background-color: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
       text-align: center;
     }
 
-    input[type="password"] {
-      padding: 10px;
-      width: 200px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
+    #login img {
+      width: 80px;
       margin-bottom: 10px;
     }
 
-    button {
-      background-color: #ffd5ca;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
+    #login h1 {
+      margin: 0;
+      font-size: 24px;
       color: #333;
+    }
+
+    #login h3 {
+      margin-bottom: 10px;
+      color: #555;
+    }
+
+    #login input {
+      padding: 12px;
+      font-size: 16px;
+      width: 100%;
+      max-width: 300px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    #login button {
+      padding: 10px 20px;
+      background-color: var(--light-pink);
+      border: none;
+      border-radius: 6px;
       font-weight: bold;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    #login button:hover {
+      background-color: #f0bfb0;
+    }
+
+    #adminPanel h2 {
+      color: var(--main-color);
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    #adminPanel input[type="text"],
+    #adminPanel input[type="number"] {
+      padding: 10px;
+      font-size: 16px;
+      margin: 8px;
+      width: calc(100% - 36px);
+      max-width: 400px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    #adminPanel button {
+      padding: 10px 20px;
+      background-color: var(--main-color);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
       cursor: pointer;
     }
 
-    button:hover {
-      background-color: #fbb9a6;
+    #adminPanel button:hover {
+      background-color: var(--hover-color);
+    }
+
+    table {
+      margin: 20px auto;
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 800px;
+      background-color: white;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 14px 10px;
+      border: 1px solid #eee;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    th {
+      background-color: var(--light-pink);
+      color: #000;
+      font-weight: bold;
+    }
+
+    .action-btn {
+      margin: 0 5px;
     }
   </style>
 </head>
 <body>
-  <img src="logo.png" alt="Logo Sentir Café" class="logo" />
-  <div class="brand">Sentir Café</div>
-
-  <div class="login-box">
-    <input type="password" id="code" placeholder="Código de acceso" />
-    <br />
-    <button onclick="entrar()">Entrar</button>
+  <div id="login">
+    <img src="logo.png" alt="Logo Sentir Café">
+    <h1>Sentir Café</h1>
+    <h3>Introduce el código de acceso</h3>
+    <input type="password" id="passwordInput" placeholder="Código" />
+    <button onclick="verificarCodigo()">Entrar</button>
   </div>
 
-  <script>
-    function entrar() {
-      const clave = document.getElementById("code").value;
-      if (clave === "1234") { // change this code if needed
-        localStorage.setItem("isLoggedIn", "true");
-        window.location.href = "admin.html";
+  <div id="adminPanel" style="display:none;">
+    <h2>Clientes</h2>
+    <input type="text" id="nombreInput" placeholder="Nombre" />
+    <input type="number" id="puntosInput" placeholder="Puntos" />
+    <button onclick="agregarCliente()">Añadir</button>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Puntos</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="tablaClientes"></tbody>
+    </table>
+  </div>
+
+  <script type="module">
+    import { db } from './firebase.js';
+    import {
+      collection, addDoc, getDocs, deleteDoc,
+      doc, updateDoc
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const tabla = document.getElementById("tablaClientes");
+
+    async function cargarClientes() {
+      tabla.innerHTML = "";
+      const querySnapshot = await getDocs(collection(db, "Clientes"));
+      querySnapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        const fila = document.createElement("tr");
+
+        const celdaNombre = document.createElement("td");
+        celdaNombre.textContent = data.nombre;
+        celdaNombre.contentEditable = true;
+        celdaNombre.addEventListener("blur", () => actualizarCampo(docSnap.id, "nombre", celdaNombre.textContent));
+        fila.appendChild(celdaNombre);
+
+        const celdaPuntos = document.createElement("td");
+        celdaPuntos.textContent = data.puntos;
+        celdaPuntos.contentEditable = true;
+        celdaPuntos.addEventListener("blur", () => {
+          const valor = parseInt(celdaPuntos.textContent);
+          if (!isNaN(valor)) {
+            actualizarCampo(docSnap.id, "puntos", valor);
+          } else {
+            celdaPuntos.textContent = data.puntos;
+          }
+        });
+        fila.appendChild(celdaPuntos);
+
+        const celdaAcciones = document.createElement("td");
+        const btnEliminar = document.createElement("button");
+        btnEliminar.textContent = "Eliminar";
+        btnEliminar.className = "action-btn";
+        btnEliminar.onclick = () => eliminarCliente(docSnap.id);
+
+        const btnVer = document.createElement("button");
+        btnVer.textContent = "Ver tarjeta";
+        btnVer.className = "action-btn";
+        btnVer.onclick = () => {
+          const url = `carte.html?id=${docSnap.id}`;
+          window.open(url, "_blank");
+        };
+
+        celdaAcciones.appendChild(btnVer);
+        celdaAcciones.appendChild(btnEliminar);
+        fila.appendChild(celdaAcciones);
+
+        tabla.appendChild(fila);
+      });
+    }
+
+    async function agregarCliente() {
+      const nombre = document.getElementById("nombreInput").value.trim();
+      const puntos = parseInt(document.getElementById("puntosInput").value) || 0;
+
+      if (!nombre) return alert("Nombre obligatorio");
+
+      await addDoc(collection(db, "Clientes"), { nombre, puntos });
+      document.getElementById("nombreInput").value = "";
+      document.getElementById("puntosInput").value = "";
+      cargarClientes();
+    }
+
+    async function eliminarCliente(id) {
+      if (!confirm("¿Estás seguro de eliminar este cliente?")) return;
+      await deleteDoc(doc(db, "Clientes", id));
+      cargarClientes();
+    }
+
+    async function actualizarCampo(id, campo, valor) {
+      await updateDoc(doc(db, "Clientes", id), { [campo]: valor });
+    }
+
+    window.verificarCodigo = function () {
+      const code = document.getElementById("passwordInput").value;
+      if (code === "1234") {
+        document.getElementById("login").style.display = "none";
+        document.getElementById("adminPanel").style.display = "block";
+        cargarClientes();
       } else {
         alert("Código incorrecto");
       }
-    }
+    };
+
+    window.agregarCliente = agregarCliente;
   </script>
 </body>
 </html>
