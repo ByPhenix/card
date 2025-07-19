@@ -80,6 +80,10 @@
       background-color: #333;
       color: white;
     }
+
+    #qrcode {
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
@@ -91,7 +95,11 @@
     <div class="client-name" id="clientName">Nombre</div>
     <div class="points">Puntos: <span id="points">0</span></div>
     <div class="circles" id="circleContainer"></div>
+    <div id="qrcode"></div>
   </div>
+
+  <!-- Librairie QR Code -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 
   <script type="module">
     import { db } from './firebase.js';
@@ -121,6 +129,12 @@
         el.textContent = i;
         container.appendChild(el);
       }
+
+      // Génération du QR code
+      const cardURL = `${window.location.origin}${window.location.pathname}?id=${id}`;
+      QRCode.toCanvas(document.getElementById('qrcode'), cardURL, function (error) {
+        if (error) console.error(error);
+      });
     }
 
     loadCard();
