@@ -2,100 +2,118 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tarjeta de Fidelidad</title>
   <link rel="stylesheet" href="style.css" />
+  <script type="module" src="main.js"></script>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #fff;
       margin: 0;
-      padding: 20px;
-      text-align: center;
+      padding: 0;
+      font-family: sans-serif;
+      background: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
 
-    .card-container {
-      max-width: 400px;
-      margin: 0 auto;
+    .card {
       background-color: #ffd5ca;
+      padding: 20px 30px;
       border-radius: 20px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      padding: 30px 20px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      max-width: 350px;
+      width: 90%;
     }
 
     .logo {
-      max-width: 100px;
-      margin-bottom: 20px;
+      width: 80px;
+      margin-bottom: 5px;
     }
 
-    h1 {
-      color: #333;
+    .client-name {
+      font-size: 16px;
       margin-bottom: 10px;
-      font-size: 24px;
+      font-weight: bold;
+    }
+
+    h2 {
+      margin: 10px 0 5px;
     }
 
     .points {
-      font-size: 20px;
       font-weight: bold;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
     }
 
-    .stamps {
+    .circles {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
       gap: 10px;
-      justify-content: center;
+      justify-items: center;
     }
 
-    .stamp {
-      width: 50px;
-      height: 50px;
+    .circle {
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       background-color: white;
-      border: 2px solid #333;
-      line-height: 50px;
+      color: black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-weight: bold;
+      border: 2px solid black;
     }
 
-    .stamp.filled {
+    .circle.active {
       background-color: #333;
-      color: #fff;
-    }
-
-    @media (max-width: 480px) {
-      .stamps {
-        grid-template-columns: repeat(4, 1fr);
-      }
-
-      .stamp {
-        width: 40px;
-        height: 40px;
-        line-height: 40px;
-        font-size: 14px;
-      }
+      color: white;
     }
   </style>
 </head>
 <body>
-  <div class="card-container">
-    <img src="LOGO%20SIN%20FONDO.png" alt="Logo Sentir Café" class="logo" />
-    <h1>Tarjeta de Fidelidad</h1>
-    <div class="points">Puntos: <span id="pointsCount">0</span></div>
-    <div class="stamps" id="stampsContainer"></div>
+  <div class="card">
+    <img src="logo.png" alt="Logo Sentir Café" class="logo" />
+    <div class="client-name" id="clientName">Cliente</div>
+    <h2>Tarjeta de Fidelidad</h2>
+    <div class="points">Puntos: <span id="points">0</span></div>
+    <div class="circles" id="circleContainer"></div>
   </div>
 
-  <script>
-    const puntos = 7; // à remplacer plus tard par Firebase
-    const container = document.getElementById("stampsContainer");
-    const count = document.getElementById("pointsCount");
-    count.innerText = puntos;
+  <script type="module">
+    import { db } from './firebase.js';
+    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    for (let i = 0; i < 10; i++) {
-      const el = document.createElement("div");
-      el.className = "stamp" + (i < puntos ? " filled" : "");
-      el.innerText = i + 1;
-      container.appendChild(el);
+    async function loadCard() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const id = urlParams.get('id');
+      if (!id) return;
+
+      const ref = doc(db, "Clientes", id);
+      const snap = await getDoc(ref);
+
+      if (!snap.exists()) return;
+
+      const data = snap.data();
+      const points = data.puntos || 0;
+      const name = data.nombre || "Cliente";
+
+      document.getElementById('points').textContent = points;
+      document.getElementById('clientName').textContent = name;
+
+      const container = document.getElementById('circleContainer');
+      for (let i = 1; i <= 10; i++) {
+        const el = document.createElement('div');
+        el.className = 'circle' + (i <= points ? ' active' : '');
+        el.textContent = i;
+        container.appendChild(el);
+      }
     }
+
+    loadCard();
   </script>
 </body>
 </html>
