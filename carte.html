@@ -78,14 +78,14 @@
 </head>
 <body>
   <div class="card-container">
-    <img src="TASSE%20NOIRE.png" alt="Logo Sentir Café" class="logo" />
+    <img src="LOGO%20SIN%20FONDO.png" alt="Logo Sentir Café" class="logo" />
     <h1>Tarjeta de Fidelidad</h1>
     <div class="points">Puntos: <span id="pointsCount">0</span></div>
     <div class="stamps" id="stampsContainer"></div>
   </div>
 
   <script>
-    const puntos = 7; // valeur récupérée depuis Firestore normalement
+    const puntos = 7; // à remplacer plus tard par Firebase
     const container = document.getElementById("stampsContainer");
     const count = document.getElementById("pointsCount");
     count.innerText = puntos;
