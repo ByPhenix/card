@@ -1,45 +1,83 @@
 import { db } from './firebase.js';
-import { collection, getDocs, deleteDoc, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import {
+  collection, addDoc, getDocs, deleteDoc,
+  doc, updateDoc
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-async function chargerClientes() {
-  const table = document.getElementById('clientTableBody');
+const tabla = document.getElementById("tablaClientes");
+
+export async function cargarClientes() {
+  tabla.innerHTML = "";
   const querySnapshot = await getDocs(collection(db, "Clientes"));
-
-  table.innerHTML = ""; // Vider la table avant de recharger
-
   querySnapshot.forEach((docSnap) => {
     const data = docSnap.data();
-    const row = document.createElement("tr");
+    const fila = document.createElement("tr");
 
-    const nomCell = document.createElement("td");
-    nomCell.textContent = data.nombre || "Desconocido";
+    // Nom (editable)
+    const celdaNombre = document.createElement("td");
+    celdaNombre.textContent = data.nombre;
+    celdaNombre.contentEditable = true;
+    celdaNombre.addEventListener("blur", () => actualizarCampo(docSnap.id, "nombre", celdaNombre.textContent));
+    fila.appendChild(celdaNombre);
 
-    const pointsCell = document.createElement("td");
-    pointsCell.textContent = data.puntos ?? 0;
+    // Points (editable)
+    const celdaPuntos = document.createElement("td");
+    celdaPuntos.textContent = data.puntos;
+    celdaPuntos.contentEditable = true;
+    celdaPuntos.addEventListener("blur", () => {
+      const valor = parseInt(celdaPuntos.textContent);
+      if (!isNaN(valor)) {
+        actualizarCampo(docSnap.id, "puntos", valor);
+      } else {
+        celdaPuntos.textContent = data.puntos; // reset if invalid
+      }
+    });
+    fila.appendChild(celdaPuntos);
 
-    // Bouton SUPPRIMER
-    const deleteCell = document.createElement("td");
-    const deleteBtn = document.createElement("button");
-    deleteBtn.textContent = "Eliminar";
-    deleteBtn.onclick = async () => {
-      await deleteDoc(doc(db, "Clientes", docSnap.id));
-      chargerClientes(); // Recharge la table après suppression
+    // Actions
+    const celdaAcciones = document.createElement("td");
+    const btnEliminar = document.createElement("button");
+    btnEliminar.textContent = "Eliminar";
+    btnEliminar.className = "action-btn";
+    btnEliminar.onclick = () => eliminarCliente(docSnap.id);
+
+    const btnVer = document.createElement("button");
+    btnVer.textContent = "Ver tarjeta";
+    btnVer.className = "action-btn";
+    btnVer.onclick = () => {
+      const url = `carte.html?id=${docSnap.id}`;
+      window.open(url, "_blank");
     };
-    deleteCell.appendChild(deleteBtn);
 
-    // Bouton AFFICHER CARTE
-    const viewBtn = document.createElement("a");
-    viewBtn.textContent = "Ver tarjeta";
-    viewBtn.href = `carte.html?id=${docSnap.id}`;
-    viewBtn.target = "_blank";
-    viewBtn.style.marginLeft = "10px";
-    deleteCell.appendChild(viewBtn);
+    celdaAcciones.appendChild(btnVer);
+    celdaAcciones.appendChild(btnEliminar);
+    fila.appendChild(celdaAcciones);
 
-    row.appendChild(nomCell);
-    row.appendChild(pointsCell);
-    row.appendChild(deleteCell);
-    table.appendChild(row);
+    tabla.appendChild(fila);
   });
 }
 
-chargerClientes();
+export async function agregarCliente() {
+  const nombre = document.getElementById("nombreInput").value;
+  const puntos = parseInt(document.getElementById("puntosInput").value) || 0;
+
+  if (!nombre) return alert("Nombre obligatorio");
+
+  await addDoc(collection(db, "Clientes"), { nombre, puntos });
+  document.getElementById("nombreInput").value = "";
+  document.getElementById("puntosInput").value = "";
+  cargarClientes();
+}
+
+async function eliminarCliente(id) {
+  if (!confirm("¿Estás seguro de eliminar este cliente?")) return;
+  await deleteDoc(doc(db, "Clientes", id));
+  cargarClientes();
+}
+
+async function actualizarCampo(id, campo, valor) {
+  await updateDoc(doc(db, "Clientes", id), { [campo]: valor });
+}
+
+window.agregarCliente = agregarCliente; // nécessaire pour que le bouton HTML le voie
+cargarClientes();
