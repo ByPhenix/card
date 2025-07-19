@@ -1,14 +1,50 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>Carte Client</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="firebase.js"></script>
-  <script src="main.js" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tarjeta de Fidelidad</title>
+  <script type="module" src="main.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #fce8e4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .tarjeta {
+      background-color: #fff;
+      border: 4px solid #ffd5ca;
+      border-radius: 20px;
+      padding: 30px;
+      width: 300px;
+      text-align: center;
+      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .tarjeta h2 {
+      color: #63003c;
+      margin-bottom: 10px;
+    }
+
+    .puntos {
+      font-size: 48px;
+      font-weight: bold;
+      color: #63003c;
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
-  <h2>Carte de Fidélité Client</h2>
-  <div id="carte"></div>
+  <div class="tarjeta">
+    <h2 id="nombreCliente">Cargando...</h2>
+    <p>Puntos acumulados</p>
+    <div class="puntos" id="puntosCliente">-</div>
+  </div>
 </body>
 </html>
