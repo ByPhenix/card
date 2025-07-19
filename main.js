@@ -4,26 +4,40 @@ import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get('id');
 
-const nombreEl = document.getElementById('nombreCliente');
-const puntosEl = document.getElementById('puntosCliente');
+const clientName = document.getElementById('clientName');
+const stampContainer = document.getElementById('stampContainer');
+const rewardMessage = document.getElementById('rewardMessage');
 
-async function cargarCliente() {
+async function cargarDatos() {
   if (!id) {
-    nombreEl.textContent = "ID no proporcionado";
+    clientName.textContent = "ID no encontrado";
     return;
   }
 
-  const docRef = doc(db, "Clientes", id);
-  const docSnap = await getDoc(docRef);
+  const ref = doc(db, "Clientes", id);
+  const snap = await getDoc(ref);
 
-  if (docSnap.exists()) {
-    const data = docSnap.data();
-    nombreEl.textContent = data.nombre;
-    puntosEl.textContent = data.puntos ?? 0;
+  if (snap.exists()) {
+    const data = snap.data();
+    clientName.textContent = data.nombre || "Sin nombre";
+
+    const puntos = data.puntos ?? 0;
+    const maxPuntos = 10;
+
+    for (let i = 0; i < maxPuntos; i++) {
+      const stamp = document.createElement("div");
+      stamp.classList.add("stamp");
+      if (i < puntos) stamp.classList.add("filled");
+      stamp.textContent = i < puntos ? "✓" : "";
+      stampContainer.appendChild(stamp);
+    }
+
+    if (puntos >= maxPuntos) {
+      rewardMessage.textContent = "¡Felicidades! Bebida gratis 🎉";
+    }
   } else {
-    nombreEl.textContent = "Cliente no encontrado";
-    puntosEl.textContent = "-";
+    clientName.textContent = "Cliente no encontrado";
   }
 }
 
-cargarCliente();
+cargarDatos();
