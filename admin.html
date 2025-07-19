@@ -6,14 +6,78 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
-      font-family: sans-serif;
-      background-color: #f2f2f2;
-      padding: 20px;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
       text-align: center;
     }
 
-    h1 {
+    #login {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      gap: 10px;
+    }
+
+    #login img {
+      width: 80px;
+      margin-bottom: 10px;
+    }
+
+    #login h1 {
+      margin: 0;
+      font-size: 24px;
+      color: #333;
+    }
+
+    #login input {
+      padding: 8px;
+      font-size: 16px;
+    }
+
+    #login button {
+      padding: 8px 20px;
+      background-color: #ffd5ca;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    #login button:hover {
+      background-color: #f0bfb0;
+    }
+
+    #adminPanel {
+      display: none;
+      padding: 20px;
+    }
+
+    h2 {
       color: #d06b5a;
+    }
+
+    input[type="text"], input[type="number"] {
+      padding: 6px;
+      margin: 5px;
+      font-size: 14px;
+    }
+
+    button {
+      padding: 6px 12px;
+      background-color: #d06b5a;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #b65d4e;
     }
 
     table {
@@ -34,50 +98,25 @@
       color: #000;
     }
 
-    input[type="text"], input[type="number"], input[type="password"] {
-      padding: 6px;
-      margin: 5px;
-    }
-
-    button {
-      padding: 6px 12px;
-      background-color: #d06b5a;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #b65d4e;
-    }
-
     .action-btn {
       margin: 0 5px;
-    }
-
-    #login {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-    }
-
-    #adminPanel {
-      display: none;
     }
   </style>
 </head>
 <body>
+
+  <!-- Page de connexion -->
   <div id="login">
-    <h2>Introduce el código de acceso</h2>
+    <img src="logo.png" alt="Logo Sentir Café">
+    <h1>Sentir Café</h1>
+    <h3>Introduce el código de acceso</h3>
     <input type="password" id="passwordInput" placeholder="Código" />
     <button onclick="verificarCodigo()">Entrar</button>
   </div>
 
+  <!-- Panneau admin -->
   <div id="adminPanel">
-    <h1>Clientes</h1>
+    <h2>Clientes</h2>
     <input type="text" id="nombreInput" placeholder="Nombre" />
     <input type="number" id="puntosInput" placeholder="Puntos" />
     <button onclick="agregarCliente()">Añadir</button>
@@ -94,6 +133,7 @@
     </table>
   </div>
 
+  <!-- JS -->
   <script type="module">
     import { db } from './firebase.js';
     import {
@@ -176,7 +216,7 @@
       await updateDoc(doc(db, "Clientes", id), { [campo]: valor });
     }
 
-    // Fonction de protection
+    // Vérification code
     window.verificarCodigo = function () {
       const code = document.getElementById("passwordInput").value;
       if (code === "1234") {
@@ -188,7 +228,6 @@
       }
     };
 
-    // Rendre global
     window.agregarCliente = agregarCliente;
   </script>
 </body>
