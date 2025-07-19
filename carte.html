@@ -16,28 +16,17 @@
       justify-content: center;
       min-height: 100vh;
       position: relative;
-      overflow-x: hidden;
+      overflow: hidden;
     }
 
     .title {
       font-size: 24px;
       font-weight: bold;
       margin-top: 20px;
+      margin-bottom: 20px;
       color: #000;
       z-index: 2;
     }
-
-    .decor {
-      position: absolute;
-      width: 70px;
-      opacity: 0.15;
-      z-index: 1;
-    }
-
-    .f1 { top: 10px; left: 10px; }
-    .f2 { top: 10px; right: 10px; }
-    .f3 { bottom: 10px; left: 10px; }
-    .f4 { bottom: 10px; right: 10px; }
 
     .card {
       background-color: #ffd5ca;
@@ -45,15 +34,13 @@
       border-radius: 20px;
       text-align: center;
       box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      max-width: 360px;
+      max-width: 370px;
       width: 90%;
-      position: relative;
       z-index: 2;
-      margin: 20px auto;
     }
 
     .logo {
-      width: 100px;
+      width: 90px;
       margin-bottom: 10px;
     }
 
@@ -98,19 +85,37 @@
       background-color: #333;
       color: white;
     }
+
+    .decor {
+      position: absolute;
+      width: 100px;
+      opacity: 0.15;
+      z-index: 1;
+    }
+
+    .f1 { top: 20px; left: 10px; }
+    .f2 { top: 60px; right: 0; }
+    .f3 { bottom: 20px; left: 0; }
+    .f4 { bottom: 50px; right: 20px; }
+
+    @media (min-width: 768px) {
+      .decor {
+        width: 140px;
+      }
+    }
   </style>
 </head>
 <body>
   <!-- Feuilles décoratives -->
-  <img src="f1.png" class="decor f1" alt="">
-  <img src="f2.png" class="decor f2" alt="">
-  <img src="f3.png" class="decor f3" alt="">
-  <img src="f4.png" class="decor f4" alt="">
+  <img src="f1.png" class="decor f1" alt="decoración f1">
+  <img src="f2.png" class="decor f2" alt="decoración f2">
+  <img src="f3.png" class="decor f3" alt="decoración f3">
+  <img src="f4.png" class="decor f4" alt="decoración f4">
 
-  <!-- Titre principal -->
+  <!-- Titre -->
   <div class="title">Tarjeta de Fidelidad</div>
 
-  <!-- Carte -->
+  <!-- Carte principale -->
   <div class="card">
     <img src="logo.png" alt="Logo Sentir Café" class="logo" />
     <div class="brand-name">Sentir Café</div>
@@ -119,6 +124,7 @@
     <div class="circles" id="circleContainer"></div>
   </div>
 
+  <!-- Script Firestore -->
   <script type="module">
     import { db } from './firebase.js';
     import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
