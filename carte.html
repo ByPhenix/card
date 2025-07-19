@@ -14,7 +14,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
+      min-height: 100vh;
     }
 
     .title {
@@ -82,7 +82,7 @@
     }
 
     #qrcode {
-      margin-top: 20px;
+      margin-top: 25px;
     }
   </style>
 </head>
@@ -95,15 +95,16 @@
     <div class="client-name" id="clientName">Nombre</div>
     <div class="points">Puntos: <span id="points">0</span></div>
     <div class="circles" id="circleContainer"></div>
-    <div id="qrcode"></div>
   </div>
 
-  <!-- Librairie QR Code -->
-  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <!-- Canvas pour QR Code -->
+  <canvas id="qrcode"></canvas>
 
+  <!-- SCRIPTS -->
   <script type="module">
     import { db } from './firebase.js';
     import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import QRCode from "https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.esm.min.js";
 
     async function loadCard() {
       const urlParams = new URLSearchParams(window.location.search);
@@ -112,7 +113,6 @@
 
       const ref = doc(db, "Clientes", id);
       const snap = await getDoc(ref);
-
       if (!snap.exists()) return;
 
       const data = snap.data();
@@ -130,7 +130,7 @@
         container.appendChild(el);
       }
 
-      // Génération du QR code
+      // Générer QR Code vers cette carte
       const cardURL = `${window.location.origin}${window.location.pathname}?id=${id}`;
       QRCode.toCanvas(document.getElementById('qrcode'), cardURL, function (error) {
         if (error) console.error(error);
