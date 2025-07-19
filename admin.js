@@ -8,60 +8,60 @@ import {
   doc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-async function chargerClients() {
-  const table = document.getElementById('clientTableBody');
-  table.innerHTML = '';
+async function cargarClientas() {
+  const tabla = document.getElementById('clientTableBody');
+  tabla.innerHTML = '';
   const querySnapshot = await getDocs(collection(db, "Clientes"));
   querySnapshot.forEach(docSnap => {
     const data = docSnap.data();
-    const row = document.createElement("tr");
+    const fila = document.createElement("tr");
 
-    const nomCell = document.createElement("td");
-    nomCell.textContent = data.nombre || "Inconnu";
+    const celdaNombre = document.createElement("td");
+    celdaNombre.textContent = data.nombre || "Desconocida";
 
-    const pointsCell = document.createElement("td");
-    pointsCell.textContent = data.puntos ?? 0;
-    pointsCell.contentEditable = true;
-    pointsCell.addEventListener('blur', async () => {
-      const newPoints = parseInt(pointsCell.textContent);
-      if (!isNaN(newPoints)) {
-        await updateDoc(doc(db, "Clientes", docSnap.id), { puntos: newPoints });
+    const celdaPuntos = document.createElement("td");
+    celdaPuntos.textContent = data.puntos ?? 0;
+    celdaPuntos.contentEditable = true;
+    celdaPuntos.addEventListener('blur', async () => {
+      const nuevosPuntos = parseInt(celdaPuntos.textContent);
+      if (!isNaN(nuevosPuntos)) {
+        await updateDoc(doc(db, "Clientes", docSnap.id), { puntos: nuevosPuntos });
       } else {
-        pointsCell.textContent = data.puntos ?? 0; // reset if invalid
+        celdaPuntos.textContent = data.puntos ?? 0;
       }
     });
 
-    const actionCell = document.createElement("td");
-    actionCell.classList.add("actions");
-    const deleteBtn = document.createElement("button");
-    deleteBtn.textContent = "Supprimer";
-    deleteBtn.onclick = async () => {
+    const celdaAcciones = document.createElement("td");
+    celdaAcciones.classList.add("actions");
+    const botonEliminar = document.createElement("button");
+    botonEliminar.textContent = "Eliminar";
+    botonEliminar.onclick = async () => {
       await deleteDoc(doc(db, "Clientes", docSnap.id));
-      chargerClients();
+      cargarClientas();
     };
-    actionCell.appendChild(deleteBtn);
+    celdaAcciones.appendChild(botonEliminar);
 
-    row.appendChild(nomCell);
-    row.appendChild(pointsCell);
-    row.appendChild(actionCell);
-    table.appendChild(row);
+    fila.appendChild(celdaNombre);
+    fila.appendChild(celdaPuntos);
+    fila.appendChild(celdaAcciones);
+    tabla.appendChild(fila);
   });
 }
 
-window.ajouterClient = async function () {
-  const nom = document.getElementById('nom').value.trim();
-  const points = parseInt(document.getElementById('points').value);
-  if (nom && !isNaN(points)) {
+window.agregarClienta = async function () {
+  const nombre = document.getElementById('nom').value.trim();
+  const puntos = parseInt(document.getElementById('points').value);
+  if (nombre && !isNaN(puntos)) {
     await addDoc(collection(db, "Clientes"), {
-      nombre: nom,
-      puntos: points
+      nombre: nombre,
+      puntos: puntos
     });
     document.getElementById('nom').value = '';
     document.getElementById('points').value = '';
-    chargerClients();
+    cargarClientas();
   } else {
-    alert("Veuillez entrer un nom et des points valides.");
+    alert("Por favor, introduce un nombre y puntos válidos.");
   }
 };
 
-chargerClients();
+cargarClientas();
