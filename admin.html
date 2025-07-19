@@ -9,9 +9,9 @@
 </head>
 <body>
   <h1>Liste des clients</h1>
-
+  
   <form id="ajoutClientForm">
-    <input type="text" id="nomClient" placeholder="Nom du client" required />
+    <input type="text" id="nomClient" placeholder="Nom" required />
     <input type="number" id="pointsClient" placeholder="Points" required />
     <button type="submit">Ajouter</button>
   </form>
@@ -21,6 +21,7 @@
       <tr>
         <th>Nom</th>
         <th>Points</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody id="clientTableBody"></tbody>
