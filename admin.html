@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin | Fidélité</title>
+  <title>Admin | Fidelidad</title>
   <script type="module" src="admin.js"></script>
   <link rel="stylesheet" href="style.css" />
   <style>
@@ -49,18 +49,18 @@
   </style>
 </head>
 <body>
-  <h1>Liste des clientes</h1>
+  <h1>Lista de clientas</h1>
   <div style="text-align: center;">
-    <input type="text" id="nom" placeholder="Nom">
-    <input type="number" id="points" placeholder="Points">
-    <button onclick="ajouterClient()">Ajouter</button>
+    <input type="text" id="nom" placeholder="Nombre">
+    <input type="number" id="points" placeholder="Puntos">
+    <button onclick="agregarClienta()">Agregar</button>
   </div>
   <table>
     <thead>
       <tr>
-        <th>Nom</th>
-        <th>Points</th>
-        <th>Actions</th>
+        <th>Nombre</th>
+        <th>Puntos</th>
+        <th>Acciones</th>
       </tr>
     </thead>
     <tbody id="clientTableBody"></tbody>
