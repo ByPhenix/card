@@ -1,78 +1,101 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tarjeta de Fidelidad</title>
-  <script type="module" src="main.js"></script>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
   <style>
     body {
-      font-family: "Arial", sans-serif;
-      background-color: #fce8e4;
+      font-family: Arial, sans-serif;
+      background-color: #fff;
       margin: 0;
-      padding: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-    }
-
-    .card {
-      background: white;
-      border-radius: 20px;
-      padding: 2rem;
-      box-shadow: 0 0 20px rgba(0,0,0,0.1);
-      max-width: 320px;
-      width: 90%;
+      padding: 20px;
       text-align: center;
     }
 
-    .card h2 {
-      margin-bottom: 10px;
-      color: #63003c;
+    .card-container {
+      max-width: 400px;
+      margin: 0 auto;
+      background-color: #ffd5ca;
+      border-radius: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      padding: 30px 20px;
     }
 
-    .stamp-grid {
+    .logo {
+      max-width: 100px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 10px;
+      font-size: 24px;
+    }
+
+    .points {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .stamps {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
       gap: 10px;
-      margin: 20px 0;
-      justify-items: center;
+      justify-content: center;
     }
 
     .stamp {
-      width: 40px;
-      height: 40px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
-      border: 2px solid #ffd5ca;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: #fff;
-      font-size: 20px;
-      color: #63003c;
+      background-color: white;
+      border: 2px solid #333;
+      line-height: 50px;
+      font-weight: bold;
     }
 
     .stamp.filled {
-      background-color: #ffd5ca;
-      color: white;
+      background-color: #333;
+      color: #fff;
     }
 
-    .reward {
-      font-size: 16px;
-      margin-top: 10px;
-      color: #008000;
-      font-weight: bold;
+    @media (max-width: 480px) {
+      .stamps {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .stamp {
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        font-size: 14px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h2 id="clientName">Cargando...</h2>
-    <p>Puntos acumulados</p>
-    <div class="stamp-grid" id="stampContainer"></div>
-    <div class="reward" id="rewardMessage"></div>
+  <div class="card-container">
+    <img src="TASSE%20NOIRE.png" alt="Logo Sentir Café" class="logo" />
+    <h1>Tarjeta de Fidelidad</h1>
+    <div class="points">Puntos: <span id="pointsCount">0</span></div>
+    <div class="stamps" id="stampsContainer"></div>
   </div>
+
+  <script>
+    const puntos = 7; // valeur récupérée depuis Firestore normalement
+    const container = document.getElementById("stampsContainer");
+    const count = document.getElementById("pointsCount");
+    count.innerText = puntos;
+
+    for (let i = 0; i < 10; i++) {
+      const el = document.createElement("div");
+      el.className = "stamp" + (i < puntos ? " filled" : "");
+      el.innerText = i + 1;
+      container.appendChild(el);
+    }
+  </script>
 </body>
 </html>
