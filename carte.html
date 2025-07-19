@@ -8,43 +8,71 @@
   <link rel="stylesheet" href="style.css">
   <style>
     body {
-      font-family: sans-serif;
+      font-family: "Arial", sans-serif;
       background-color: #fce8e4;
+      margin: 0;
+      padding: 0;
       display: flex;
       align-items: center;
       justify-content: center;
       height: 100vh;
-      margin: 0;
     }
 
-    .tarjeta {
-      background-color: #fff;
-      border: 4px solid #ffd5ca;
+    .card {
+      background: white;
       border-radius: 20px;
-      padding: 30px;
-      width: 300px;
+      padding: 2rem;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      max-width: 320px;
+      width: 90%;
       text-align: center;
-      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
     }
 
-    .tarjeta h2 {
-      color: #63003c;
+    .card h2 {
       margin-bottom: 10px;
+      color: #63003c;
     }
 
-    .puntos {
-      font-size: 48px;
-      font-weight: bold;
+    .stamp-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin: 20px 0;
+      justify-items: center;
+    }
+
+    .stamp {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid #ffd5ca;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #fff;
+      font-size: 20px;
       color: #63003c;
-      margin-top: 20px;
+    }
+
+    .stamp.filled {
+      background-color: #ffd5ca;
+      color: white;
+    }
+
+    .reward {
+      font-size: 16px;
+      margin-top: 10px;
+      color: #008000;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <div class="tarjeta">
-    <h2 id="nombreCliente">Cargando...</h2>
+  <div class="card">
+    <h2 id="clientName">Cargando...</h2>
     <p>Puntos acumulados</p>
-    <div class="puntos" id="puntosCliente">-</div>
+    <div class="stamp-grid" id="stampContainer"></div>
+    <div class="reward" id="rewardMessage"></div>
   </div>
 </body>
 </html>
