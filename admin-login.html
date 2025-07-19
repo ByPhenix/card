@@ -2,54 +2,57 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Administración de Clientes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f9f9f9;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-    }
-
-    #adminPanel {
-      margin-top: 20px;
-      width: 95%;
-      max-width: 900px;
-      background: #fff;
+      font-family: "Helvetica Neue", sans-serif;
+      background-color: #f2f2f2;
       padding: 20px;
-      border-radius: 20px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      margin: 0;
     }
 
     h1 {
       color: #d06b5a;
+      text-align: center;
       font-size: 28px;
+      margin-bottom: 30px;
+    }
+
+    #adminPanel {
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+
+    #adminPanel input, button {
+      font-size: 16px;
+      border-radius: 8px;
+    }
+
+    .form-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
       margin-bottom: 20px;
+      justify-content: center;
     }
 
     input[type="text"], input[type="number"] {
       padding: 10px;
-      margin: 10px 5px;
       border: 1px solid #ccc;
-      border-radius: 8px;
-      width: 40%;
-      max-width: 200px;
+      width: calc(50% - 10px);
     }
 
     button {
-      padding: 10px 16px;
       background-color: #d06b5a;
       color: white;
+      padding: 10px 16px;
       border: none;
-      border-radius: 8px;
       cursor: pointer;
-      font-weight: bold;
-      margin: 10px 5px;
     }
 
     button:hover {
@@ -58,52 +61,72 @@
 
     table {
       width: 100%;
-      margin-top: 20px;
-      border-collapse: separate;
-      border-spacing: 0 12px;
+      border-collapse: collapse;
+      margin-top: 10px;
     }
 
     th, td {
+      padding: 12px 8px;
+      border: 1px solid #ddd;
       text-align: center;
-      padding: 12px;
-      background: #fff;
     }
 
     th {
       background-color: #ffd5ca;
       color: #000;
-      border-top-left-radius: 12px;
-      border-top-right-radius: 12px;
     }
 
-    tr {
-      border-radius: 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-    }
-
-    td:first-child {
-      border-bottom-left-radius: 12px;
-      border-top-left-radius: 12px;
-    }
-
-    td:last-child {
-      border-bottom-right-radius: 12px;
-      border-top-right-radius: 12px;
-    }
-
-    .action-btn {
-      display: block;
+    td button {
+      margin: 4px 0;
       width: 100%;
-      margin: 5px 0;
+    }
+
+    .login-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    #passwordInput {
+      padding: 10px;
+      width: 200px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    @media (max-width: 500px) {
+      input[type="text"], input[type="number"] {
+        width: 100%;
+      }
+
+      table, thead, tbody, th, td, tr {
+        font-size: 14px;
+      }
+
+      td button {
+        font-size: 14px;
+      }
     }
   </style>
 </head>
 <body>
-  <div id="adminPanel">
+  <div id="login" class="login-container">
+    <img src="logo.png" alt="Logo" width="80" style="margin-bottom: 10px;">
+    <h2 style="color:#d06b5a; margin-bottom: 20px;">Sentir Café</h2>
+    <input type="password" id="passwordInput" placeholder="Código de acceso" />
+    <button onclick="verificarCodigo()">Entrar</button>
+  </div>
+
+  <div id="adminPanel" style="display:none">
     <h1>Clientes</h1>
-    <input type="text" id="nombreInput" placeholder="Nombre" />
-    <input type="number" id="puntosInput" placeholder="Puntos" />
-    <button onclick="agregarCliente()">Añadir</button>
+    <div class="form-group">
+      <input type="text" id="nombreInput" placeholder="Nombre" />
+      <input type="number" id="puntosInput" placeholder="Puntos" />
+      <button onclick="agregarCliente()">Añadir</button>
+    </div>
 
     <table>
       <thead>
@@ -153,18 +176,14 @@
         fila.appendChild(celdaPuntos);
 
         const celdaAcciones = document.createElement("td");
-        const btnEliminar = document.createElement("button");
-        btnEliminar.textContent = "Eliminar";
-        btnEliminar.className = "action-btn";
-        btnEliminar.onclick = () => eliminarCliente(docSnap.id);
 
         const btnVer = document.createElement("button");
         btnVer.textContent = "Ver tarjeta";
-        btnVer.className = "action-btn";
-        btnVer.onclick = () => {
-          const url = `carte.html?id=${docSnap.id}`;
-          window.open(url, "_blank");
-        };
+        btnVer.onclick = () => window.open(`carte.html?id=${docSnap.id}`, "_blank");
+
+        const btnEliminar = document.createElement("button");
+        btnEliminar.textContent = "Eliminar";
+        btnEliminar.onclick = () => eliminarCliente(docSnap.id);
 
         celdaAcciones.appendChild(btnVer);
         celdaAcciones.appendChild(btnEliminar);
@@ -196,8 +215,18 @@
       await updateDoc(doc(db, "Clientes", id), { [campo]: valor });
     }
 
+    window.verificarCodigo = function () {
+      const code = document.getElementById("passwordInput").value;
+      if (code === "1234") {
+        document.getElementById("login").style.display = "none";
+        document.getElementById("adminPanel").style.display = "block";
+        cargarClientes();
+      } else {
+        alert("Código incorrecto");
+      }
+    };
+
     window.agregarCliente = agregarCliente;
-    cargarClientes();
   </script>
 </body>
 </html>
