@@ -2,134 +2,137 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tarjeta de Fidelidad</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
+      font-family: 'Arial', sans-serif;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(to bottom right, #fff8f0, #ffe1db);
+      background: linear-gradient(180deg, #fceeea 0%, #fce6e0 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
       min-height: 100vh;
+      justify-content: center;
     }
 
-    .title {
-      font-size: 28px;
-      font-weight: bold;
-      margin: 30px 0 20px;
-      color: #5c2a1d;
+    h1 {
+      color: #5e2c1c;
+      margin-bottom: 20px;
+      font-size: 2rem;
+      text-align: center;
     }
 
     .card {
-      background: #fff1ec;
+      background-color: #fddfd6;
       border-radius: 30px;
-      padding: 40px 30px;
+      padding: 30px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
       max-width: 380px;
       width: 90%;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
       text-align: center;
-      position: relative;
     }
 
     .logo {
-      width: 80px;
-      margin-bottom: 10px;
+      width: 60px;
+      margin-bottom: 15px;
     }
 
-    .brand-name {
-      font-size: 20px;
+    .cafe-name {
       font-weight: bold;
-      color: #5c2a1d;
+      font-size: 1.3rem;
+      color: #5e2c1c;
     }
 
-    .client-name {
-      font-size: 22px;
-      font-weight: 600;
-      margin: 5px 0 10px;
-      color: #2e2e2e;
-    }
-
-    .points {
+    .nombre {
       font-weight: bold;
-      color: #8a4f3d;
-      margin-bottom: 25px;
+      font-size: 1.5rem;
+      margin-top: 5px;
+      color: #333;
     }
 
-    .circles {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 12px;
+    .puntos {
+      font-weight: bold;
+      margin: 15px 0;
+      font-size: 1.2rem;
+      color: #5e2c1c;
     }
 
-    .circle {
-      width: 42px;
-      height: 42px;
-      background: white;
+    .stamps {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 15px;
+      margin-top: 10px;
+    }
+
+    .stamp {
+      width: 45px;
+      height: 45px;
       border-radius: 50%;
-      border: 2px solid #8a4f3d;
-      color: #8a4f3d;
+      border: 2px solid #5e2c1c;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: bold;
-      font-size: 14px;
-      transition: 0.3s;
+      background-color: white;
+      color: #5e2c1c;
+      font-size: 1rem;
     }
 
-    .circle.active {
-      background: #8a4f3d;
+    .stamp.active {
+      background-color: #8a4a38;
       color: white;
-      transform: scale(1.1);
-      box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
     }
   </style>
 </head>
 <body>
-  <div class="title">Tarjeta de Fidelidad</div>
+  <h1>Tarjeta de Fidelidad</h1>
 
   <div class="card">
-    <img src="logo.png" alt="Logo Sentir Café" class="logo" />
-    <div class="brand-name">Sentir Café</div>
-    <div class="client-name" id="clientName">Nombre</div>
-    <div class="points">Puntos: <span id="points">0</span></div>
-    <div class="circles" id="circleContainer"></div>
+    <img src="logo.png" alt="Logo" class="logo" />
+    <div class="cafe-name">Sentir Café</div>
+    <div class="nombre" id="nombreCliente">Nombre</div>
+    <div class="puntos" id="puntosCliente">Puntos: 0</div>
+    <div class="stamps" id="estampas"></div>
   </div>
 
   <script type="module">
     import { db } from './firebase.js';
-    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import {
+      doc,
+      getDoc
+    } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
-    async function loadCard() {
+    async function cargarDatos() {
       const urlParams = new URLSearchParams(window.location.search);
       const id = urlParams.get('id');
+
       if (!id) return;
 
-      const ref = doc(db, "Clientes", id);
-      const snap = await getDoc(ref);
-      if (!snap.exists()) return;
+      const docRef = doc(db, 'Clientes', id);
+      const docSnap = await getDoc(docRef);
 
-      const data = snap.data();
-      const points = data.puntos || 0;
-      const name = data.nombre || "Cliente";
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        document.getElementById('nombreCliente').textContent = data.nombre;
+        document.getElementById('puntosCliente').textContent = 'Puntos: ' + data.puntos;
 
-      document.getElementById('points').textContent = points;
-      document.getElementById('clientName').textContent = name;
-
-      const container = document.getElementById('circleContainer');
-      for (let i = 1; i <= 10; i++) {
-        const el = document.createElement('div');
-        el.className = 'circle' + (i <= points ? ' active' : '');
-        el.textContent = i;
-        container.appendChild(el);
+        const contenedorEstampas = document.getElementById('estampas');
+        for (let i = 1; i <= 10; i++) {
+          const sello = document.createElement('div');
+          sello.classList.add('stamp');
+          if (i <= data.puntos) sello.classList.add('active');
+          sello.textContent = i;
+          contenedorEstampas.appendChild(sello);
+        }
+      } else {
+        alert('Cliente no encontrado.');
       }
     }
 
-    loadCard();
+    cargarDatos();
   </script>
 </body>
 </html>
