@@ -15,6 +15,7 @@
       align-items: center;
       justify-content: center;
       min-height: 100vh;
+      position: relative;
       overflow-x: hidden;
     }
 
@@ -23,7 +24,20 @@
       font-weight: bold;
       margin-top: 20px;
       color: #000;
+      z-index: 2;
     }
+
+    .decor {
+      position: absolute;
+      width: 70px;
+      opacity: 0.15;
+      z-index: 1;
+    }
+
+    .f1 { top: 10px; left: 10px; }
+    .f2 { top: 10px; right: 10px; }
+    .f3 { bottom: 10px; left: 10px; }
+    .f4 { bottom: 10px; right: 10px; }
 
     .card {
       background-color: #ffd5ca;
@@ -34,19 +48,9 @@
       max-width: 360px;
       width: 90%;
       position: relative;
+      z-index: 2;
       margin: 20px auto;
     }
-
-    .card img.decor {
-      position: absolute;
-      width: 70px;
-      opacity: 0.2;
-    }
-
-    .decor.f1 { top: -10px; left: -10px; }
-    .decor.f2 { top: -10px; right: -10px; }
-    .decor.f3 { bottom: -10px; left: -10px; }
-    .decor.f4 { bottom: -10px; right: -10px; }
 
     .logo {
       width: 100px;
@@ -97,15 +101,17 @@
   </style>
 </head>
 <body>
+  <!-- Feuilles décoratives -->
+  <img src="f1.png" class="decor f1" alt="">
+  <img src="f2.png" class="decor f2" alt="">
+  <img src="f3.png" class="decor f3" alt="">
+  <img src="f4.png" class="decor f4" alt="">
 
+  <!-- Titre principal -->
   <div class="title">Tarjeta de Fidelidad</div>
 
+  <!-- Carte -->
   <div class="card">
-    <img src="F1 SC.png" class="decor f1" alt="">
-    <img src="F2 SC.png" class="decor f2" alt="">
-    <img src="F3 SC.png" class="decor f3" alt="">
-    <img src="F4 SC.png" class="decor f4" alt="">
-
     <img src="logo.png" alt="Logo Sentir Café" class="logo" />
     <div class="brand-name">Sentir Café</div>
     <div class="client-name" id="clientName">Nombre</div>
