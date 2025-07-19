@@ -34,7 +34,7 @@
       color: #000;
     }
 
-    input[type="text"], input[type="number"] {
+    input[type="text"], input[type="number"], input[type="password"] {
       padding: 6px;
       margin: 5px;
     }
@@ -55,40 +55,44 @@
     .action-btn {
       margin: 0 5px;
     }
+
+    #login {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    #adminPanel {
+      display: none;
+    }
   </style>
 </head>
 <body>
-  <!-- Protection par mot de passe -->
-  <script>
-    const motDePasse = "123"; // change ce mot de passe
-    const autorise = sessionStorage.getItem("admin_autorisé");
-    if (!autorise) {
-      const saisie = prompt("Entrez le mot de passe admin :");
-      if (saisie !== motDePasse) {
-        alert("Accès refusé.");
-        window.location.href = "/"; // ou autre URL
-      } else {
-        sessionStorage.setItem("admin_autorisé", true);
-      }
-    }
-  </script>
+  <div id="login">
+    <h2>Introduce el código de acceso</h2>
+    <input type="password" id="passwordInput" placeholder="Código" />
+    <button onclick="verificarCodigo()">Entrar</button>
+  </div>
 
-  <h1>Clientes</h1>
+  <div id="adminPanel">
+    <h1>Clientes</h1>
+    <input type="text" id="nombreInput" placeholder="Nombre" />
+    <input type="number" id="puntosInput" placeholder="Puntos" />
+    <button onclick="agregarCliente()">Añadir</button>
 
-  <input type="text" id="nombreInput" placeholder="Nombre" />
-  <input type="number" id="puntosInput" placeholder="Puntos" />
-  <button onclick="agregarCliente()">Añadir</button>
-
-  <table>
-    <thead>
-      <tr>
-        <th>Nombre</th>
-        <th>Puntos</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody id="tablaClientes"></tbody>
-  </table>
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Puntos</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="tablaClientes"></tbody>
+    </table>
+  </div>
 
   <script type="module">
     import { db } from './firebase.js';
@@ -122,7 +126,7 @@
           if (!isNaN(valor)) {
             actualizarCampo(docSnap.id, "puntos", valor);
           } else {
-            celdaPuntos.textContent = data.puntos;
+            celdaPuntos.textContent = data.puntos; // reset if invalid
           }
         });
         fila.appendChild(celdaPuntos);
@@ -172,7 +176,20 @@
       await updateDoc(doc(db, "Clientes", id), { [campo]: valor });
     }
 
-    cargarClientes();
+    // Fonction de protection
+    window.verificarCodigo = function () {
+      const code = document.getElementById("passwordInput").value;
+      if (code === "1234") {
+        document.getElementById("login").style.display = "none";
+        document.getElementById("adminPanel").style.display = "block";
+        cargarClientes();
+      } else {
+        alert("Código incorrecto");
+      }
+    };
+
+    // Rendre global
+    window.agregarCliente = agregarCliente;
   </script>
 </body>
 </html>
